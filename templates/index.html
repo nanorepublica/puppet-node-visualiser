@@ -1,0 +1,54 @@
+<html>
+
+    <head>
+        <title>Puppet Nodes with Included Classes</title>
+    </head>
+    <style>
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.classes {
+    background-color: red;
+    display: none;
+}
+
+.shown {
+    display: block;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  height: 12px;
+  padding: 5px;
+  font: 10px sans-serif;
+  background: #ddd;
+  border: solid 1px #aaa;
+  pointer-events: none;
+}
+
+</style>
+
+    <body>
+        <h1>Puppet Node Graph</h1>
+        <div id="graph"></div>
+
+    </body>
+    <script src="static/underscore-min.js" ></script>
+    <script src="static/d3.v3.min.js" ></script>
+    <script src="static/nodes.js"></script>
+</html>
