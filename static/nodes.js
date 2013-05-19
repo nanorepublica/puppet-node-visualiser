@@ -58,7 +58,7 @@ var div = d3.select("body").append("div")
 function mouseover() {
   div.transition()
       .duration(500)
-      .style("opacity", 1);
+      .style("opacity", 0.7);
 }
 
 function mousemove(d) {
