@@ -33,141 +33,6 @@ def p_nodes(p):
              | empty'''
     pass
 
-def p_line_end(p):
-    '''line_end : COMMENT
-                | NEWLINE'''
-    pass
-
-def p_opt_line_end(p):
-    '''opt_line_end : line_end
-                    | empty'''
-    pass
-
-def p_import(p):
-    '''import : IMPORT DIR line_end'''
-    pass
-
-
-# if & case
-def p_if_statement(p):
-    '''if_statement : IF conditional OCURLY opt_line_end statements CCURLY
-                    | IF conditional OCURLY opt_line_end statements CCURLY ELSE OCURLY opt_line_end statements CCURLY
-                    | IF conditional OCURLY opt_line_end statements CCURLY elsif ELSE OCURLY opt_line_end statements CCURLY'''
-    print 'if statement ', list(p)
-
-def p_elsif(p):
-    '''elsif : ELSIF conditional OCURLY opt_line_end statements CCURLY elsif
-             | empty'''
-    pass
-
-def p_conditional(p):
-    '''conditional : VAR DEQUAL STRCONST
-                   | NAME OPAREN STRCONST CPAREN'''
-    print 'conditional ', list(p)
-
-def p_case_statement(p):
-    '''case_statement : CASE VAR OCURLY opt_line_end switch_content CCURLY'''
-    pass
-
-def p_switch_content(p):
-    '''switch_content : case_condition COLON OCURLY opt_line_end statements CCURLY opt_line_end switch_content
-                      | case_condition COLON OCURLY opt_line_end statements CCURLY opt_line_end''' 
-    pass
-
-def p_case_condition(p):
-    '''case_condition : STRCONST COMMA case_condition
-                      | NAME COMMA case_condition
-                      | STRCONST
-                      | NAME'''
-    pass
-
-
-def p_statements(p):
-    '''statements : assignment statements
-                  | assignment
-                  | resource_default statements
-                  | resource_default 
-                  | resource statements
-                  | resource
-                  | include statements
-                  | include
-                  | case_statement statements
-                  | case_statement
-                  | if_statement statements
-                  | if_statement
-                  | function_call statements
-                  | function_call
-                  | line_end statements
-                  | line_end'''
-    print 'statements ', list(p)
-    # if p[1] == 'include':
-    #     p[0] = p[2]
-
-#    print list(p)
-    # if p[1]:
-    #     try:
-    #         if p[3] is None:
-    #             p[0] = [p[1]]
-    #         else:
-    #             p[3].append(p[1])
-    #             p[0] = p[3]
-    #     except IndexError:
-    #         p[0] = [p[1]]
-
-
-def p_assignment(p):
-    '''assignment : VAR EQUALS STRCONST opt_line_end
-                  | VAR EQUALS VAR opt_line_end'''
-    pass
-
-def p_function_call(p):
-    '''function_call : VAR EQUALS NAME OPAREN CPAREN opt_line_end'''
-    pass 
-
-# resources
-def p_resource_default(p):
-    '''resource_default : NAME OCURLY opt_line_end resource_arg CCURLY opt_line_end'''
-    pass
-
-def p_resource_arg(p):
-    '''resource_arg : NAME ARROW list resource_delimit resource_arg
-                    | NAME ARROW STRCONST resource_delimit resource_arg
-                    | NAME ARROW NAME resource_delimit resource_arg
-                    | NAME ARROW VAR resource_delimit resource_arg
-                    | empty'''
-    pass
-
-def p_resource_delimit(p):
-    '''resource_delimit : COMMA opt_line_end
-                        | opt_line_end'''
-    pass
-
-def p_resource(p):
-    '''resource : NAME OCURLY NAME COLON opt_line_end resource_arg CCURLY opt_line_end'''
-    pass
-
-
-def p_include(p):
-    '''include : INCLUDE NAME opt_line_end'''
-    print 'include ', list(p)
-    if p[1] == 'include':
-        p[0] = p[2]
-
-# lists
-def p_list(p):
-    '''list : OSQUARE list_content CSQUARE'''
-    pass
-
-def p_list_content(p):
-    '''list_content : STRCONST COMMA list_content
-                    | STRCONST list_content
-                    | NAME list_content
-                    | NAME COMMA list_content
-                    | VAR list_content
-                    | VAR COMMA list_content
-                    | empty'''
-    pass
-
 # nodes
 def p_node(p):
     '''node : NODE NAME node_inheritance node_content opt_line_end'''
@@ -202,6 +67,140 @@ def p_node_content(p):
     else:
         p[0] = []
 
+
+def p_import(p):
+    '''import : IMPORT DIR line_end'''
+    pass
+
+def p_statements(p):
+    '''statements : assignment statements
+                  | assignment
+                  | resource_default statements
+                  | resource_default 
+                  | resource statements
+                  | resource
+                  | include statements
+                  | include
+                  | case_statement statements
+                  | case_statement
+                  | if_statement statements
+                  | if_statement
+                  | function_call statements
+                  | function_call
+                  | line_end statements
+                  | line_end'''
+    print 'statements ', list(p)
+    # if p[1] == 'include':
+    #     p[0] = p[2]
+
+#    print list(p)
+    # if p[1]:
+    #     try:
+    #         if p[3] is None:
+    #             p[0] = [p[1]]
+    #         else:
+    #             p[3].append(p[1])
+    #             p[0] = p[3]
+    #     except IndexError:
+    #         p[0] = [p[1]]
+
+def p_assignment(p):
+    '''assignment : VAR EQUALS STRCONST opt_line_end
+                  | VAR EQUALS VAR opt_line_end'''
+    pass
+
+# resources
+def p_resource_default(p):
+    '''resource_default : NAME OCURLY opt_line_end resource_arg CCURLY opt_line_end'''
+    pass
+
+def p_resource(p):
+    '''resource : NAME OCURLY NAME COLON opt_line_end resource_arg CCURLY opt_line_end'''
+    pass
+
+def p_resource_arg(p):
+    '''resource_arg : NAME ARROW list resource_delimit resource_arg
+                    | NAME ARROW STRCONST resource_delimit resource_arg
+                    | NAME ARROW NAME resource_delimit resource_arg
+                    | NAME ARROW VAR resource_delimit resource_arg
+                    | empty'''
+    pass
+
+def p_resource_delimit(p):
+    '''resource_delimit : COMMA opt_line_end
+                        | opt_line_end'''
+    pass
+
+# if & case
+def p_if_statement(p):
+    '''if_statement : IF conditional OCURLY opt_line_end statements CCURLY
+                    | IF conditional OCURLY opt_line_end statements CCURLY ELSE OCURLY opt_line_end statements CCURLY
+                    | IF conditional OCURLY opt_line_end statements CCURLY elsif ELSE OCURLY opt_line_end statements CCURLY'''
+    print 'if statement ', list(p)
+
+def p_elsif(p):
+    '''elsif : ELSIF conditional OCURLY opt_line_end statements CCURLY elsif
+             | empty'''
+    pass
+
+def p_conditional(p):
+    '''conditional : VAR DEQUAL STRCONST
+                   | NAME OPAREN STRCONST CPAREN'''
+    print 'conditional ', list(p)
+
+def p_case_statement(p):
+    '''case_statement : CASE VAR OCURLY opt_line_end switch_content CCURLY'''
+    pass
+
+def p_switch_content(p):
+    '''switch_content : case_condition COLON OCURLY opt_line_end statements CCURLY opt_line_end switch_content
+                      | case_condition COLON OCURLY opt_line_end statements CCURLY opt_line_end''' 
+    pass
+
+def p_case_condition(p):
+    '''case_condition : STRCONST COMMA case_condition
+                      | NAME COMMA case_condition
+                      | STRCONST
+                      | NAME'''
+    pass
+
+# function calls
+def p_function_call(p):
+    '''function_call : VAR EQUALS NAME OPAREN CPAREN opt_line_end'''
+    pass 
+
+# include modules = important one!
+def p_include(p):
+    '''include : INCLUDE NAME opt_line_end'''
+    print 'include ', list(p)
+    if p[1] == 'include':
+        p[0] = p[2]
+
+#line endings
+def p_line_end(p):
+    '''line_end : COMMENT
+                | NEWLINE'''
+    pass
+
+def p_opt_line_end(p):
+    '''opt_line_end : line_end
+                    | empty'''
+    pass
+
+# lists
+def p_list(p):
+    '''list : OSQUARE list_content CSQUARE'''
+    pass
+
+def p_list_content(p):
+    '''list_content : STRCONST COMMA list_content
+                    | STRCONST list_content
+                    | NAME list_content
+                    | NAME COMMA list_content
+                    | VAR list_content
+                    | VAR COMMA list_content
+                    | empty'''
+    pass
 
 def p_empty(p):
     'empty :'
