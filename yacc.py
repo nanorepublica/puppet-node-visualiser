@@ -95,6 +95,8 @@ def p_statements(p):
                   | case_statement
                   | if_statement statements
                   | if_statement
+                  | function_call statements
+                  | function_call
                   | line_end statements
                   | line_end'''
     print 'statements ', list(p)
