@@ -74,6 +74,7 @@ def p_import(p):
 
 def p_statements(p):
     '''statements : assignment statements
+                  | resource_default statements
                   | resource statements
                   | include statements
                   | case_statement statements
@@ -102,13 +103,17 @@ def p_assignment(p):
     pass
 
 # resources
-def p_resource(p):
-    '''resource : NAME OCURLY resource_default opt_line_end resource_arg CCURLY opt_line_end'''
+def p_resource_default(p):
+    '''resource_default : OBJECT OCURLY opt_line_end resource_arg CCURLY opt_line_end'''
     pass
 
-def p_resource_default(p):
+def p_resource(p):
+    '''resource : NAME OCURLY resource_name opt_line_end resource_arg CCURLY opt_line_end'''
+    pass
+
+def p_resource_name(p):
     '''resource_default : NAME COLON
-                        | empty'''
+                        | STRCONST COLON'''
     pass
 
 def p_resource_arg(p):

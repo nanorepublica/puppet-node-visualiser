@@ -16,7 +16,7 @@ reserved = {
       'import': 'IMPORT',
       }
 
-tokens = ['NAME', 'DIR', 'VAR', 'STRCONST',
+tokens = ['NAME', 'DIR', 'VAR', 'STRCONST', 'OBJECT',
           'CCURLY', 'OCURLY', 'NEWLINE', 'COMMENT', 'ARROW', 'COMMA', 'NEQUAL',
           'COLON', 'EQUALS', 'DEQUAL', 'OPAREN', 'CPAREN', 'OSQUARE', 'CSQUARE'
           ] + list(reserved.values())
@@ -54,8 +54,13 @@ def t_NAME(t):
     t.type = reserved.get(t.value,'NAME')
     return t
 
+def t_OBJECT(t):
+    r'([A-Za-z0-9_\-\/][A-Za-z0-9_\-\/\$]*)((:{2})?(?=[A-Za-z0-9_\-\/\$]+)[A-Za-z0-9_\-\/\$]*)*'
+    t.type = reserved.get(t.value,'OBJECT')
+    return t
+
 def t_VAR(t):
-    r'\$([A-Za-z0-9_\-]*)(:{2})?(?=[A-Za-z0-9_\-]+)[A-Za-z0-9_\-]*'
+    r'\A\$([a-z][a-z0-9_]*)?(::[a-z][a-z0-9_]*)*::[a-zA-Z0-9_]+\Z'
     t.type = reserved.get(t.value,'VAR')
     return t
 
