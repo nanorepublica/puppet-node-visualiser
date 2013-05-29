@@ -74,19 +74,10 @@ def p_import(p):
 
 def p_statements(p):
     '''statements : assignment statements
-                  | assignment
-                  | resource_default statements
-                  | resource_default 
                   | resource statements
-                  | resource
                   | include statements
-                  | include
                   | case_statement statements
-                  | case_statement
                   | if_statement statements
-                  | if_statement
-                  | function_call statements
-                  | function_call
                   | line_end statements
                   | line_end'''
     print 'statements ', list(p)
@@ -106,16 +97,18 @@ def p_statements(p):
 
 def p_assignment(p):
     '''assignment : VAR EQUALS STRCONST opt_line_end
-                  | VAR EQUALS VAR opt_line_end'''
+                  | VAR EQUALS VAR opt_line_end
+                  | VAR EQUALS NAME OPAREN CPAREN opt_line_end'''
     pass
 
 # resources
-def p_resource_default(p):
-    '''resource_default : NAME OCURLY opt_line_end resource_arg CCURLY opt_line_end'''
+def p_resource(p):
+    '''resource : NAME OCURLY resource_default opt_line_end resource_arg CCURLY opt_line_end'''
     pass
 
-def p_resource(p):
-    '''resource : NAME OCURLY NAME COLON opt_line_end resource_arg CCURLY opt_line_end'''
+def p_resource_default(p):
+    '''resource_default : NAME COLON
+                        | empty'''
     pass
 
 def p_resource_arg(p):
@@ -124,7 +117,7 @@ def p_resource_arg(p):
                     | NAME ARROW NAME resource_delimit resource_arg
                     | NAME ARROW VAR resource_delimit resource_arg
                     | empty'''
-    pass
+    print 'resource_arg ', list(p)
 
 def p_resource_delimit(p):
     '''resource_delimit : COMMA opt_line_end
@@ -164,14 +157,9 @@ def p_case_condition(p):
                       | NAME'''
     pass
 
-# function calls
-def p_function_call(p):
-    '''function_call : VAR EQUALS NAME OPAREN CPAREN opt_line_end'''
-    pass 
-
 # include modules = important one!
 def p_include(p):
-    '''include : INCLUDE NAME opt_line_end'''
+    '''include : INCLUDE NAME line_end'''
     print 'include ', list(p)
     if p[1] == 'include':
         p[0] = p[2]
@@ -180,7 +168,7 @@ def p_include(p):
 def p_line_end(p):
     '''line_end : COMMENT
                 | NEWLINE'''
-    pass
+    print 'line_end ', list(p)
 
 def p_opt_line_end(p):
     '''opt_line_end : line_end
