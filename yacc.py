@@ -112,7 +112,7 @@ def p_resource(p):
     pass
 
 def p_resource_name(p):
-    '''resource_default : NAME COLON
+    '''resource_name : NAME COLON
                         | STRCONST COLON'''
     pass
 
