@@ -29,7 +29,7 @@ def p_start(p):
 def p_nodes(p):
     '''nodes : node nodes
              | import nodes
-             | statements nodes
+             | ext_statements nodes
              | empty'''
     pass
 
@@ -72,14 +72,31 @@ def p_import(p):
     '''import : IMPORT DIR line_end'''
     pass
 
+def p_ext_statements(p):
+        '''ext_statements : assignment ext_statements
+                          | resource_default ext_statements
+                          | resource ext_statements
+                          | include ext_statements
+                          | case_statement ext_statements
+                          | if_statement ext_statements
+                          | line_end ext_statements'''
+    print 'ext_statements ', list(p)
+    # if p[1] == 'include':
+    #     p[0] = p[2]
+
+#    print list(p)
+    # if p[1]:
+    #     try:
+    #         if p[3] is None:
+    #             p[0] = [p[1]]
+    #         else:
+    #             p[3].append(p[1])
+    #             p[0] = p[3]
+    #     except IndexError:
+    #         p[0] = [p[1]]
+
 def p_statements(p):
-    '''statements : assignment statements
-                  | resource_default statements
-                  | resource statements
-                  | include statements
-                  | case_statement statements
-                  | if_statement statements
-                  | line_end statements
+    '''statements : ext_statements
                   | empty'''
     print 'statements ', list(p)
     # if p[1] == 'include':
