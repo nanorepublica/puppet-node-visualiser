@@ -50,17 +50,17 @@ def t_DIR(t):
     return t
 
 def t_NAME(t):
-    r'([A-Za-z0-9_\-\/][A-Za-z0-9_\-\/\$]*)((:{2})?(?=[A-Za-z0-9_\-\/\$]+)[A-Za-z0-9_\-\/\$]*)*'
+    r'([a-z0-9_\-\/][A-Za-z0-9_\-\/\$]*)((:{2})?(?=[A-Za-z0-9_\-\/\$]+)[A-Za-z0-9_\-\/\$]*)*'
     t.type = reserved.get(t.value,'NAME')
     return t
 
 def t_OBJECT(t):
-    r'([A-Za-z0-9_\-\/][A-Za-z0-9_\-\/\$]*)((:{2})?(?=[A-Za-z0-9_\-\/\$]+)[A-Za-z0-9_\-\/\$]*)*'
+    r'([A-Z][A-Za-z0-9_\-\/\$]*)((:{2})?(?=[A-Za-z0-9_\-\/\$]+)[A-Za-z0-9_\-\/\$]*)*'
     t.type = reserved.get(t.value,'OBJECT')
     return t
 
 def t_VAR(t):
-    r'\$([a-z][a-z0-9_]*)?(::[a-z][a-z0-9_]*)*::[a-zA-Z0-9_]+'
+    r'\$([A-Za-z0-9_\-]*)(:{2})?(?=[A-Za-z0-9_\-]+)[A-Za-z0-9_\-]+'
     t.type = reserved.get(t.value,'VAR')
     return t
 
