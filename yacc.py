@@ -59,13 +59,13 @@ def p_node_inheritance(p):
 def p_node_content(p):
     '''node_content : OCURLY opt_line_end statements CCURLY
                     | OCURLY CCURLY'''
-    if p[2] != '}':
-        if not re.match('\n+', p[2]):
-            p[0] = p[2]
-        else:
-            p[0] = p[3]
-    else:
-        p[0] = []
+#    if p[2] != '}':
+#        if not re.match('\n+', p[2]):
+#            p[0] = p[2]
+#        else:
+#            p[0] = p[3]
+#    else:
+#        p[0] = []
 
 
 def p_import(p):
@@ -80,7 +80,7 @@ def p_statements(p):
                   | case_statement statements
                   | if_statement statements
                   | line_end statements
-                  | line_end'''
+                  | empty'''
     print 'statements ', list(p)
     # if p[1] == 'include':
     #     p[0] = p[2]
