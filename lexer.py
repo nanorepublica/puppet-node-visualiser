@@ -60,7 +60,7 @@ def t_OBJECT(t):
     return t
 
 def t_VAR(t):
-    r'\A\$([a-z][a-z0-9_]*)?(::[a-z][a-z0-9_]*)*::[a-zA-Z0-9_]+\Z'
+    r'\$([a-z][a-z0-9_]*)?(::[a-z][a-z0-9_]*)*::[a-zA-Z0-9_]+'
     t.type = reserved.get(t.value,'VAR')
     return t
 
