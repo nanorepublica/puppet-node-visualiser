@@ -11,6 +11,7 @@ nodes = {}
 nodes['name'] = 'site.pp'
 nodes['children'] = []
 nodes['classes'] = []
+files = ['site.pp']
 
 
 def traverse_node_tree(tree, name):
@@ -39,13 +40,7 @@ def p_node(p):
     if not p[3]:
         nodes['children'].append(new)
     else:
-        # new = {'name':p[2], 'children':[], 'classes': p[4]}
-        # traverse nodes to find where p[3] == 'name'
-        # then add {'name':p[2], 'children':[]
         t_nodes[p[3]].append(new)
-        # print t_nodes
-        # traverse_node_tree(nodes,p[3]).append(new)
-
 
 def p_node_inheritance(p):
     '''node_inheritance : INHERITS NAME
@@ -65,26 +60,16 @@ def p_node_content(p):
 
 def p_import(p):
     '''import : IMPORT DIR line_end'''
-    pass
+    # want to take p[2] and add that to the data to parse
+    # need to deal with something like 'users/*.pp'
+    if '*' not in p[2]:
+        files.append(p[2][1:-1])
 
 def p_ext_statements(p):
     '''ext_statements : ext_statement ext_statements
                       | ext_statement
                       '''
-    print 'ext_statements ', list(p)
-    # if p[1] == 'include':
-    #     p[0] = p[2]
-
-#    print list(p)
-    # if p[1]:
-    #     try:
-    #         if p[3] is None:
-    #             p[0] = [p[1]]
-    #         else:
-    #             p[3].append(p[1])
-    #             p[0] = p[3]
-    #     except IndexError:
-    #         p[0] = [p[1]]
+    pass
 
 def p_ext_statment(p):
     '''ext_statement : assignment
@@ -140,7 +125,8 @@ def p_resource(p):
 
 def p_resource_name(p):
     '''resource_name : NAME COLON
-                        | STRCONST COLON'''
+                     | STRCONST COLON
+                     | list COLON'''
     pass
 
 def p_resource_arg(p):
@@ -217,16 +203,16 @@ def p_opt_line_end(p):
 
 # lists
 def p_list(p):
-    '''list : OSQUARE list_content CSQUARE'''
+    '''list : OSQUARE opt_line_end list_content opt_line_end CSQUARE'''
     pass
 
 def p_list_content(p):
-    '''list_content : STRCONST COMMA list_content
-                    | STRCONST list_content
-                    | NAME list_content
-                    | NAME COMMA list_content
-                    | VAR list_content
-                    | VAR COMMA list_content
+    '''list_content : STRCONST COMMA opt_line_end list_content
+                    | STRCONST opt_line_end list_content
+                    | NAME opt_line_end list_content
+                    | NAME COMMA opt_line_end list_content
+                    | VAR opt_line_end list_content
+                    | VAR COMMA opt_line_end list_content
                     | empty'''
     pass
 

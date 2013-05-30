@@ -39,7 +39,7 @@ def t_COMMENT(t):
     pass
 
 def t_STRCONST(t):
-    r'[\'|"]{1}(?![A-Za-z0-9\/:$.\{\}@\-\'\|\\\!\_ ]+\.pp)[A-Za-z0-9\/:$.\{\}@\-\'\|\\\!\_ ]+[\'|"]{1}'
+    r'(?P<paren>[\'|"]{1})(?![A-Za-z0-9\/:$\.,\{\}@\-\'\|\\\!\_ ]+\.pp)[A-Za-z0-9\/:$\.,\{\}@\-\'\|\\\!\_ ]+(?P=paren)'
     t.type = reserved.get(t.value,'STRCONST')
     return t
 
@@ -49,7 +49,7 @@ def t_DIR(t):
     return t
 
 def t_NAME(t):
-    r'([a-z0-9_\-\/][A-Za-z0-9_\-\/\$]*)((:{2})?(?=[A-Za-z0-9_\-\/\$]+)[A-Za-z0-9_\-\/\$]*)*'
+    r'([a-z0-9_\-\/][A-Za-z0-9_\-\/\$\.\^\\\[\]\+]*)((:{2})?(?=[A-Za-z0-9_\-\/\$\^\\\[\]\+]+)[A-Za-z0-9_\-\/\$\\\^\[\]\+]*)*'
     t.type = reserved.get(t.value,'NAME')
     return t
 

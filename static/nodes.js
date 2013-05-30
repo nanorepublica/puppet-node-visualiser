@@ -14,8 +14,8 @@ var svg = d3.select("#graph").append("svg")
     .attr("width", diameter)
     .attr("height", diameter - 150)
   .append("g")
-    // .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")"); //may change this transform?
-    .attr("transform", "translate(" + 200 + "," + 20 + ")"); //may change this transform?
+     .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")"); //may change this transform?
+    //.attr("transform", "translate(" + 200 + "," + 20 + ")"); //may change this transform?
 
 d3.json("/nodes", function(error, root) {
   var nodes = tree.nodes(root);

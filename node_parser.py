@@ -1,12 +1,12 @@
 '''This parses the data and serves the webapp'''
 from lexer import lexer
-from yacc import parser, nodes, t_nodes
+from yacc import parser, nodes, t_nodes, files
 from flask import Flask, render_template
 import json
 APP = Flask(__name__)
 
 DEBUG = 0
-LDEBUG = 0 
+LDEBUG = 1 
 
 DATA = '''# site.pp
 #
@@ -60,18 +60,18 @@ node ithfme01 inherits virtual {
 # }
 
 
-def traverse_node_tree(tree, name):
+def traverse_node_tree(tree, relationships):
     '''Given a tree of nodes and a named node return list of children of the named node'''
-    if tree['name'] == name:
-        return tree['children']
-    else:
-        for child in tree['children']:
-            return traverse_node_tree(child, name)
+    for child in tree['children']:
+        if child['name'] in relationships.keys():
+            child['children'] = relationships[child['name']]
+            traverse_node_tree(child, relationships)
 
-def parse_file():
+def parse_file(ppfile):
     '''this needs to open file and parse it'''
-    site = '/etc/puppet/manifests/site.pp'
-    with open(site, 'r') as fsite:
+    base_dir = '/etc/puppet/manifests/'
+    current_file = '%s%s' % (base_dir, ppfile)
+    with open(current_file, 'r') as fsite:
         fdata = fsite.read()
 
     if LDEBUG:
@@ -92,10 +92,9 @@ def parse_file():
     else:
         parser.parse(fdata)
     
+#    for parent in dict(t_nodes).keys():
+    traverse_node_tree(nodes, dict(t_nodes))
 
-    print t_nodes['default_base']
-    print t_nodes['base']
-    print t_nodes['default']
     # for parent, nodes in dict(t_nodes):
 
 
@@ -114,5 +113,6 @@ def json_nodes():
 #     return json.dumps(classes)
 
 if __name__ == "__main__":
-    parse_file()
+    for ppfile in files:
+        parse_file(ppfile)
     APP.run(host='0.0.0.0')
