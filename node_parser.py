@@ -1,13 +1,14 @@
+'''This parses the data and serves the webapp'''
 from lexer import lexer
 from yacc import parser, nodes, t_nodes
 from flask import Flask, render_template
 import json
-app = Flask(__name__)
+APP = Flask(__name__)
 
 DEBUG = 0
-LDEBUG = 1 
+LDEBUG = 0 
 
-data = '''# site.pp
+DATA = '''# site.pp
 #
 #
     case $hi {
@@ -75,33 +76,37 @@ def parse_file():
 
     if LDEBUG:
         if DEBUG:
-            lexer.input(data)
+            lexer.input(DATA)
         else:
             lexer.input(fdata)
 
         while True:
             tok = lexer.token()
-            if not tok: break      # No more input
+            if not tok: 
+                break      # No more input
             print tok
 
 
     if DEBUG:
-        parser.parse(data)
+        parser.parse(DATA)
     else:
         parser.parse(fdata)
     
 
     print t_nodes['default_base']
     print t_nodes['base']
+    print t_nodes['default']
     # for parent, nodes in dict(t_nodes):
 
 
-@app.route("/")
+@APP.route("/")
 def index():
+    ''' the index page!'''
     return render_template('index.html')
 
-@app.route('/nodes')
+@APP.route('/nodes')
 def json_nodes():
+    '''get a JSON of the node data structure'''
     return json.dumps(nodes)
 
 # @app.route('/classes')
@@ -110,4 +115,4 @@ def json_nodes():
 
 if __name__ == "__main__":
     parse_file()
-    app.run(host='0.0.0.0')
+    APP.run(host='0.0.0.0')

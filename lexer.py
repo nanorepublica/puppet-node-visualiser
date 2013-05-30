@@ -11,7 +11,6 @@ reserved = {
       'else':'ELSE',
       'case':'CASE',
       'realize':'REALIZE',
-      'exec': 'EXEC',
       'notify': 'NOTIFY',
       'import': 'IMPORT',
       }
@@ -40,12 +39,12 @@ def t_COMMENT(t):
     pass
 
 def t_STRCONST(t):
-    r'[\'|"]{1}[A-Za-z0-9\/:$.\{\}@\-\'\|\\\!\_ ]+[\'|"]{1}'
+    r'[\'|"]{1}(?![A-Za-z0-9\/:$.\{\}@\-\'\|\\\!\_ ]+\.pp)[A-Za-z0-9\/:$.\{\}@\-\'\|\\\!\_ ]+[\'|"]{1}'
     t.type = reserved.get(t.value,'STRCONST')
     return t
 
 def t_DIR(t):
-    r'[\'|"][A-Za-z0-9\/\*\-]+.pp[\'|"]'
+    r'[\'|"]{1}[A-Za-z0-9\/\*\-]+.pp[\'|"]{1}'
     t.type = reserved.get(t.value,'DIR')
     return t
 
@@ -65,7 +64,7 @@ def t_VAR(t):
     return t
 
 # Ignored Characters
-t_ignore = " \t><*?"
+t_ignore = " \t><?"
 
 def t_NEWLINE(t):
     r'\n+'

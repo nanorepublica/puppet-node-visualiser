@@ -8,7 +8,7 @@ from lexer import tokens
 
 t_nodes = defaultdict(list)
 nodes = {}
-nodes['name'] = 'puppet_nodes'
+nodes['name'] = 'site.pp'
 nodes['children'] = []
 nodes['classes'] = []
 
@@ -22,15 +22,14 @@ def traverse_node_tree(tree, name):
             return traverse_node_tree(child, name)
 
 
-def p_start(p):
-    '''start : nodes'''
-    pass
-
 def p_nodes(p):
     '''nodes : node nodes
              | import nodes
              | ext_statements nodes
-             | empty'''
+             | node
+             | import
+             | ext_statements
+             '''
     pass
 
 # nodes
@@ -39,7 +38,6 @@ def p_node(p):
     new = {'name':p[2], 'children':[], 'classes': p[4]}
     if not p[3]:
         nodes['children'].append(new)
-        print nodes
     else:
         # new = {'name':p[2], 'children':[], 'classes': p[4]}
         # traverse nodes to find where p[3] == 'name'
@@ -58,14 +56,11 @@ def p_node_inheritance(p):
 
 def p_node_content(p):
     '''node_content : OCURLY opt_line_end statements CCURLY
-                    | OCURLY CCURLY'''
-#    if p[2] != '}':
-#        if not re.match('\n+', p[2]):
-#            p[0] = p[2]
-#        else:
-#            p[0] = p[3]
-#    else:
-#        p[0] = []
+                    | OCURLY opt_line_end CCURLY'''
+    if p[3] != '}':
+        p[0] = p[3]
+    else:
+        p[0] = []
 
 
 def p_import(p):
@@ -73,13 +68,9 @@ def p_import(p):
     pass
 
 def p_ext_statements(p):
-        '''ext_statements : assignment ext_statements
-                          | resource_default ext_statements
-                          | resource ext_statements
-                          | include ext_statements
-                          | case_statement ext_statements
-                          | if_statement ext_statements
-                          | line_end ext_statements'''
+    '''ext_statements : ext_statement ext_statements
+                      | ext_statement
+                      '''
     print 'ext_statements ', list(p)
     # if p[1] == 'include':
     #     p[0] = p[2]
@@ -95,23 +86,42 @@ def p_ext_statements(p):
     #     except IndexError:
     #         p[0] = [p[1]]
 
-def p_statements(p):
-    '''statements : ext_statements
-                  | empty'''
-    print 'statements ', list(p)
-    # if p[1] == 'include':
-    #     p[0] = p[2]
+def p_ext_statment(p):
+    '''ext_statement : assignment
+                     | resource_default
+                     | resource
+                     | include
+                     | case_statement
+                     | if_statement
+                     | line_end
+                     '''
+    pass
 
-#    print list(p)
-    # if p[1]:
-    #     try:
-    #         if p[3] is None:
-    #             p[0] = [p[1]]
-    #         else:
-    #             p[3].append(p[1])
-    #             p[0] = p[3]
-    #     except IndexError:
-    #         p[0] = [p[1]]
+
+def p_statements(p):
+    '''statements : statement statements
+                  | statement'''
+    if p[1]:
+        try:
+            if p[2] is None:
+                p[0] = [p[1]]
+            else:
+                p[2].append(p[1])
+                p[0] = p[2]
+        except IndexError:
+            p[0] = [p[1]]
+
+def p_statement(p):
+    '''statement : assignment
+                 | resource_default
+                 | resource
+                 | include
+                 | realize
+                 | notify
+                 | case_statement
+                 | if_statement
+                 | line_end'''
+    p[0] = p[1]
 
 def p_assignment(p):
     '''assignment : VAR EQUALS STRCONST opt_line_end
@@ -139,7 +149,7 @@ def p_resource_arg(p):
                     | NAME ARROW NAME resource_delimit resource_arg
                     | NAME ARROW VAR resource_delimit resource_arg
                     | empty'''
-    print 'resource_arg ', list(p)
+    pass
 
 def p_resource_delimit(p):
     '''resource_delimit : COMMA opt_line_end
@@ -151,7 +161,7 @@ def p_if_statement(p):
     '''if_statement : IF conditional OCURLY opt_line_end statements CCURLY
                     | IF conditional OCURLY opt_line_end statements CCURLY ELSE OCURLY opt_line_end statements CCURLY
                     | IF conditional OCURLY opt_line_end statements CCURLY elsif ELSE OCURLY opt_line_end statements CCURLY'''
-    print 'if statement ', list(p)
+    pass
 
 def p_elsif(p):
     '''elsif : ELSIF conditional OCURLY opt_line_end statements CCURLY elsif
@@ -160,8 +170,9 @@ def p_elsif(p):
 
 def p_conditional(p):
     '''conditional : VAR DEQUAL STRCONST
+                   | VAR NEQUAL STRCONST
                    | NAME OPAREN STRCONST CPAREN'''
-    print 'conditional ', list(p)
+    pass
 
 def p_case_statement(p):
     '''case_statement : CASE VAR OCURLY opt_line_end switch_content CCURLY'''
@@ -179,10 +190,17 @@ def p_case_condition(p):
                       | NAME'''
     pass
 
+def p_realize(p):
+    '''realize : REALIZE OPAREN OBJECT list CPAREN opt_line_end'''
+    pass
+
+def p_notify(p):
+    '''notify : NOTIFY OCURLY opt_line_end STRCONST COLON opt_line_end CCURLY'''
+    pass
+
 # include modules = important one!
 def p_include(p):
-    '''include : INCLUDE NAME line_end'''
-    print 'include ', list(p)
+    '''include : INCLUDE NAME opt_line_end'''
     if p[1] == 'include':
         p[0] = p[2]
 
@@ -190,7 +208,7 @@ def p_include(p):
 def p_line_end(p):
     '''line_end : COMMENT
                 | NEWLINE'''
-    print 'line_end ', list(p)
+    pass
 
 def p_opt_line_end(p):
     '''opt_line_end : line_end
